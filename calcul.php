@@ -34,7 +34,9 @@
             $num1 = $_GET['num1'];
             $num2 = $_GET['num2'];
             $operateur = $_GET['operateur'];
-            $data = [];
+            $date = date('d-m-y h:i:s');
+            $visitor = $_SERVER['REMOTE_ADDR'];
+            $data = "";
             switch($operateur)
             {
                 case "Non":
@@ -42,32 +44,39 @@
                 break;
                 case "Addition":
                     $res = $num1+$num2;
-                    echo $res;
+                    echo "Le résultat donne : ",$res , " et est effectué à : ", $date, "\n";
+                    echo "et vous etes: ", $visitor;
                 break;
                 case "Multiplication":
                     $res = $num1*$num2;
-                    echo $res;
+                    echo "Le résultat donne : ",$res , " et est effectué à : ", $date;
                 break;
                 case "Soustraction":
                     $res = $num1-$num2;
-                    echo $res;
+                    echo "Le résultat donne : ",$res , " et est effectué à : ", $date;
                 break;
                 case "Division":
                     $res = $num1/$num2;
-                    echo $res;
+                    echo "Le résultat donne : ",$res , " et à été effectué le : ", $date;
+                break;
             }
-            $counter = 1;
-            while(isset($_COOKIE[$counter])){
-                if(isset($_COOKIE['10'])){
-                    $x = substr((string)$counter, -1, 1);
-                    $counter = (int)$x;
-                }else{
-                    $counter++;
-                }
-                    
+
+            // if the cookie exists, read it and unserialize it. If not, create a blank array
+            if(array_key_exists('res', $_COOKIE)) {
+            $cookie = $_COOKIE['res'];
+            $cookie = unserialize($cookie);
+            } else {
+                $cookie = array();
             }
-            $data = json_decode($_COOKIE['res'], true);
-            setcookie("res", json_encode($res), time()+3600);
+
+            // add the value to the array and serialize
+            $cookie[] = $res;
+            $cookie = serialize($cookie);
+
+            // save the cookie
+            setcookie('res', $cookie, time()+3600);
+            
+            
         }
 
 ?>  
